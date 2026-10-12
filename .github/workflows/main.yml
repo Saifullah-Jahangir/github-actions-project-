@@ -15,4 +15,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker image
-        run: docker build -t my-devops-website:ci ./site
+        run: docker build -t mysaifi .
