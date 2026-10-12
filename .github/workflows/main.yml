@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,5 +18,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
       - name: Build Docker image
-        run: docker build -t mysaifi:ci ./site
+        run: docker build -t ghcr.io/saifullah-jahangir/mysaifi:latest ./site
+
+      - name: Push Docker image
+        if: github.event_name == 'push'
+        run: docker push ghcr.io/saifullah-jahangir/mysaifi:latest
